@@ -53,13 +53,14 @@ The final, tuned model is highly effective at identifying fraud while maintainin
 ### Classification Report
 
 ```
+Classification Report:
               precision    recall  f1-score   support
 
   Legitimate       1.00      1.00      1.00    828659
-       Fraud       0.97      1.00      0.98      2464
+       Fraud       0.90      0.99      0.94      2464
 
     accuracy                           1.00    831123
-   macro avg       0.99      1.00      0.99    831123
+   macro avg       0.95      1.00      0.97    831123
 weighted avg       1.00      1.00      1.00    831123
 ```
 
