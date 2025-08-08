@@ -13,7 +13,7 @@ from contextlib import asynccontextmanager
 # import numpy as np
 
 
-# 1. Pydantic Model for Input Validation =================================
+# 1. Pydantic Model for Input Validation ==================================================
 class Transaction(BaseModel):
     type: str = Field(..., pattern="^(CASH_OUT|TRANSFER)$")
     amount: float = Field(..., gt=0)
@@ -24,7 +24,7 @@ class Transaction(BaseModel):
     step: int = 1
 
 
-# 2. Load The Model =================================
+# 2. Load The Model ==================================================
 ml_models = {}
 
 @asynccontextmanager
@@ -48,16 +48,16 @@ async def lifespan(app: FastAPI):
     print("Model resources cleared.")
 
 
-# 3. Initialize FastAPI App =================================
+# 3. Initialize FastAPI App ==================================================
 app = FastAPI(
-    title="Fraud Detection API",
+    title="Fraud Detection API by Christopher Manlongat",
     description="An API to predict fraudulent transactions using a hybrid rule-based/ML approach.",
     version="4.0.0",  # Final Version!
     lifespan=lifespan
 )
 
 
-# 4. Define the Prediction Endpoint =================================
+# 4. Define the Prediction Endpoint ==================================================
 @app.post("/predict")
 def predict_fraud(transaction: Transaction):
     model = ml_models["fraud_detection_model"]
@@ -115,7 +115,7 @@ def predict_fraud(transaction: Transaction):
         "reason": "Prediction from XGBoost model." # included reason
     }
 
-# 5. Run the API via Uvicorn =================================
+# 5. Run the API via Uvicorn ==================================================
 if __name__ == "__main__":
     print("Starting API server...")
     uvicorn.run(app, host="127.0.0.1", port=8000)

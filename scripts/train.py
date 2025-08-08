@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report, precision_recall_curve, auc
 import xgboost as xgb
 import os
-#import numpy as np
+# import numpy as np
 
 print("Starting the model training script...")
 
@@ -18,7 +18,7 @@ print("Starting the model training script...")
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
 
-# 1. Load Data =================================
+# 1. Load Data ==================================================
 DATA_PATH = os.path.join(PROJECT_ROOT, "data", "PS_20174392719_1491204439457_log.csv")
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports", "figures")
@@ -29,7 +29,7 @@ os.makedirs(REPORTS_DIR, exist_ok=True)
 df = pd.read_csv(DATA_PATH)
 print("Dataset loaded successfully.")
 
-# 2. Final Feature Engineering & Preprocessing =================================
+# 2. Final Feature Engineering & Preprocessing ==================================================
 print("Performing final, comprehensive feature engineering...")
 
 df_filtered = df[(df["type"] == "TRANSFER") | (df["type"] == "CASH_OUT")].copy()
@@ -47,13 +47,13 @@ df_filtered = pd.get_dummies(df_filtered, columns=["type"], prefix="type", drop_
 y = df_filtered["isFraud"]
 X = df_filtered.drop(["isFraud", "nameOrig", "nameDest", "isFlaggedFraud"], axis=1)
 
-# 3. Train-Test Split =================================
+# 3. Train-Test Split ==================================================
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=42, stratify=y
 )
 print(f"Data split into {len(X_train)} training and {len(X_test)} testing samples.")
 
-# 4. Model Training w/ Tuned Hyperparameters =================================
+# 4. Model Training w/ Tuned Hyperparameters ==================================================
 print("Training the final XGBoost model with tuned hyperparameters...")
 scale_pos_weight = y_train.value_counts()[0] / y_train.value_counts()[1]
 
@@ -73,12 +73,12 @@ model = xgb.XGBClassifier(
 model.fit(X_train, y_train)
 print("Model training complete.")
 
-# 5. Save the Model =================================
+# 5. Save the Model ==================================================
 model_path = os.path.join(MODELS_DIR, "fraud_detection_model.xgb")
 model.save_model(model_path)
 print(f"Model saved to {model_path}")
 
-# 6. Model Evaluation =================================
+# 6. Model Evaluation ==================================================
 print("Evaluating the model...")
 y_pred = model.predict(X_test)
 y_pred_proba = model.predict_proba(X_test)[:, 1] # Needed for PR Curve
