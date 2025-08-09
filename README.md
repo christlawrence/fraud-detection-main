@@ -46,6 +46,33 @@ The initial model was a standard XGBoost classifier. It performed well on obviou
 
 **The Fix**: I implemented a hybrid system. The API now uses a hard-coded rule as a "safety net." It first checks every transaction for the undeniable "black hole" pattern. If detected, it's immediately flagged as fraud, overriding the model. This guarantees that this critical fraud pattern is never missed, demonstrating an understanding of how to build robust, layered security.
 
+---
+
+## 🧠 Model Explainability & Insights
+
+Beyond just building an accurate model, it's crucial to understand *why* it makes its decisions. Using the SHAP (SHapley Additive exPlanations) library, I conducted a deep-dive analysis to interpret the model's behavior.
+
+### Key Findings:
+
+1.  **Feature Engineering was the Key to Success:** The analysis confirmed that our engineered feature, `errorBalanceOrig`, is by far the **most impactful predictor** of fraud. This validates the initial hypothesis that discrepancies in account balances are the strongest signal of fraudulent activity.
+
+2.  **The Model is Behaving Logically:** Waterfall plots for individual predictions show the model is making intelligent, explainable decisions. For fraudulent transactions, a large, positive `errorBalanceOrig` is the primary factor driving the fraud score up. Conversely, for legitimate transactions, a value of zero for this feature is the strongest signal pushing the score down.
+
+3.  **Justification for the Hybrid System:** The analysis also shows that our `isBlackHoleTransaction` feature has a lower overall importance. This is a critical insight! It confirms that while this pattern is a definite sign of fraud, it's not the most common driver. This perfectly justifies our final hybrid design: the ML model handles the broad, complex patterns, while the rule-based "safety net" in our API guarantees that this specific, critical edge case is **always** caught.
+
+### SHAP Summary Plot
+
+This "beeswarm" plot shows the global importance and impact of each feature. `errorBalanceOrig` clearly stands out as the most powerful predictor.
+
+![SHAP Summary Plot](reports/figures/shap_summary_beeswarm.png)
+
+### SHAP Waterfall Plot (Example Fraudulent Transaction)
+
+This plot breaks down a single prediction, showing how each feature contributes to the final fraud score.
+
+![SHAP Waterfall Plot](reports/figures/shap_waterfall_fraud.png)
+
+
 ## 📊 Performance
 
 The final, tuned model is highly effective at identifying fraud while maintaining an extremely low rate of false positives on legitimate transactions.
@@ -122,5 +149,9 @@ You will see a confirmation that the server is running on `http://127.0.0.1:8000
   * **XGBoost**: The core machine learning algorithm for the classification model.
   * **Scikit-learn**: For data splitting and model evaluation metrics.
   * **Pandas**: For data manipulation and feature engineering.
+  * **SHAP**: For model explainability and feature importance analysis.
+  * **Jupyter Notebook**: For exploratory data analysis.
+  * **Seaborn**: For data visualization.
+  * **Matplotlib**: For data visualization.
   * **Matplotlib & Seaborn**: For generating evaluation plots.
   * **Git & GitHub**: For version control and project hosting.

@@ -5,3 +5,6 @@ seaborn
 scikit-learn
 xgboost
 jupyter
+fastapi[all]
+shap
+python-json-logger
